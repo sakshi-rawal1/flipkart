@@ -1,6 +1,7 @@
 package com.sakshi.flipkart.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,13 +9,19 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="customer_tb")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "customer_tb",
+        uniqueConstraints = @UniqueConstraint(
+                name = "email_unique",
+                columnNames = "email_id"
+        )
+)
+@Builder
 public class Customer {
 
-    enum Gender{
+    public enum Gender{
         MALE,FEMALE;
     }
     @Id
@@ -23,6 +30,7 @@ public class Customer {
     private String firstName;
     private String lastName;
     private Long phoneNumber;
+    @Column(name = "email_id")
     private String emailId;
     private String imageUrl;
     private String password;
