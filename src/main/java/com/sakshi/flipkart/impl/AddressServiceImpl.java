@@ -34,7 +34,11 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressDto getAddress(Long addressId) {
-        return null;
+        Address address = addressRepository.findById(addressId).orElseThrow(
+                ()-> new ResourceNotFoundException("Address","addressId",addressId.toString())
+        );
+        AddressDto addressDto = convertAddressToAddressDto(address);
+        return addressDto;
     }
 
     @Override
