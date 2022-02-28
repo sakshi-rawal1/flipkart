@@ -36,6 +36,6 @@ public class Customer {
     private String password;
     private Boolean status;
     private Gender gender;
-    @OneToMany(cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.REMOVE,orphanRemoval = true)
     private List<Address> addresses;
 }

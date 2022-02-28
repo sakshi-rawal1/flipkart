@@ -32,7 +32,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public CustomerDto getCustomer(Long customerId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(
-                () -> new ResourceNotFoundException("Customer", "customerId", customerId));
+                () -> new ResourceNotFoundException("Customer", "customerId", customerId.toString()));
         CustomerDto customerDto = convertEntityToDto(customer);
         return customerDto;
     }
@@ -40,7 +40,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public CustomerDto deleteCustomer(Long customerId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(
-                () -> new ResourceNotFoundException("Customer", "customerId", customerId));
+                () -> new ResourceNotFoundException("Customer", "customerId", customerId.toString()));
         CustomerDto customerDto = convertEntityToDto(customer);
         customerRepository.deleteById(customerId);
         return customerDto;
@@ -49,7 +49,7 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public CustomerDto updateCustomer(Long customerId, CustomerDto customerDto) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(
-                () -> new ResourceNotFoundException("Customer", "customerId", customerId));
+                () -> new ResourceNotFoundException("Customer", "customerId", customerId.toString()));
         customer = convertDtoToEntity(customerDto);
         customer = customerRepository.save(customer);
         customerDto = convertEntityToDto(customer);
