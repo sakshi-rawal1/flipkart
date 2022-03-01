@@ -22,4 +22,10 @@ public class AddressController {
     public ResponseEntity<AddressDto> getAddress(@PathVariable Long addressId){
         return new ResponseEntity<AddressDto>(addressService.getAddress(addressId),HttpStatus.OK);
     }
+
+    @DeleteMapping("/{addressId}")
+    public ResponseEntity<AddressDto> deleteAddress(@PathVariable Long addressId){
+        return new ResponseEntity<AddressDto>(addressService.deleteAddress(addressId),HttpStatus.OK);
+    }
+
 }
