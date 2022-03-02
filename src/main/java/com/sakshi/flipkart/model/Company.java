@@ -1,19 +1,21 @@
 package com.sakshi.flipkart.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name="company_tb")
+@Table(name = "company_tb")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Company {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long companyId;
     private String companyName;
     private String ImageUrl;
@@ -21,11 +23,8 @@ public class Company {
     private String websiteUrl;
     private Long phoneNumber;
     private String emailId;
-    @JoinColumn(
-            name="address_id",
-            referencedColumnName = "addressId"
-    )
-    @OneToOne(cascade = CascadeType.DETACH)
-    private Address address;
+    private String address;
+    private Integer pinCode;
+    private String city;
 
 }
