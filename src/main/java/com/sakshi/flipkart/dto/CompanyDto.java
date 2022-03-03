@@ -16,4 +16,5 @@ public class CompanyDto {
     private String websiteUrl;
     private Long phoneNumber;
     private String emailId;
+    private String address;
 }

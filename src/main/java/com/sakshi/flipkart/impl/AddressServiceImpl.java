@@ -61,7 +61,7 @@ public class AddressServiceImpl implements AddressService {
         Customer customer = customerRepository.findById(customerId).orElseThrow(
                 ()-> new ResourceNotFoundException("Customer","cutomerId",customerId.toString())
         );
-        Optional<Address> address = addressRepository.findByCustomerCustomerId(customerId);
+        List<Address> address = addressRepository.findByCustomerCustomerId(customerId).get();
         List<AddressDto> addressDtos = address.stream().map(i->convertAddressToAddressDto(i)).collect(Collectors.toList());
         return addressDtos;
     }

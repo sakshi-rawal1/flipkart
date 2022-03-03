@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/address")
 public class AddressController {
@@ -26,6 +28,10 @@ public class AddressController {
     @DeleteMapping("/{addressId}")
     public ResponseEntity<AddressDto> deleteAddress(@PathVariable Long addressId){
         return new ResponseEntity<AddressDto>(addressService.deleteAddress(addressId),HttpStatus.OK);
+    }
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<AddressDto>> getAddressByCustomer(@PathVariable Long customerId){
+        return new ResponseEntity<List<AddressDto>>(addressService.findByCustomerId(customerId),HttpStatus.OK);
     }
 
 }
