@@ -13,7 +13,7 @@ public interface ProductService {
 
     List<ProductDto> getProductByCompanyName(String companyName);
 
-    List<ProductDto> getProductsByName(String name);
+    List<ProductDto> getProductsByName(String productName);
 
     List<ProductDto> searchProducts(String regex);
 

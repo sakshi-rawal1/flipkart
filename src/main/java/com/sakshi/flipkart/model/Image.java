@@ -1,6 +1,7 @@
 package com.sakshi.flipkart.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
