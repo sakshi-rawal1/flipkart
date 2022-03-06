@@ -9,4 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ImageDto {
 
+    private String imageUrl;
+    private Long productId;
+
 }
