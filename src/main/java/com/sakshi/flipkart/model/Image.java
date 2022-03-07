@@ -25,5 +25,4 @@ public class Image {
     @ManyToOne(cascade = CascadeType.DETACH)
     private Product product;
 
-
 }

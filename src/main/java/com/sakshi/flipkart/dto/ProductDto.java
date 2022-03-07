@@ -17,6 +17,5 @@ public class ProductDto {
     private String description;
     private Long companyId;
     private Long categoryId;
-    //private List<ImageDto> imageDtos;
-
+    private List<String> imageUrl;
 }

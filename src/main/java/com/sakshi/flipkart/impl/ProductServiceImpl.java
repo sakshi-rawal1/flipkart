@@ -1,19 +1,25 @@
 package com.sakshi.flipkart.impl;
 
+import com.sakshi.flipkart.dto.ImageDto;
 import com.sakshi.flipkart.dto.ProductDto;
 import com.sakshi.flipkart.exception.ResourceIsExistException;
 import com.sakshi.flipkart.exception.ResourceNotFoundException;
 import com.sakshi.flipkart.model.Category;
 import com.sakshi.flipkart.model.Company;
+import com.sakshi.flipkart.model.Image;
 import com.sakshi.flipkart.model.Product;
 import com.sakshi.flipkart.repository.CategoryRepository;
 import com.sakshi.flipkart.repository.CompanyRepository;
+import com.sakshi.flipkart.repository.ImageRepository;
 import com.sakshi.flipkart.repository.ProductRepository;
 import com.sakshi.flipkart.service.ProductService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,25 +32,104 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ImageRepository imageRepository;
 
     @Override
+    @Transactional
     public ProductDto addProduct(ProductDto productDto) {
         ProductDto finalProductDto = productDto;
         Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
-                ()-> new ResourceNotFoundException("Category","categoryId", finalProductDto.getCategoryId().toString())
+                () -> new ResourceNotFoundException("Category", "categoryId", finalProductDto.getCategoryId().toString())
         );
         Company company = companyRepository.findById(productDto.getCompanyId()).orElseThrow(
-                ()-> new ResourceNotFoundException("Company","companyId", finalProductDto.getCompanyId().toString())
+                () -> new ResourceNotFoundException("Company", "companyId", finalProductDto.getCompanyId().toString())
         );
-//        productRepository.findByProductName(productDto.getProductName()).ifPresent(
-//                i-> {
-//                    throw new ResourceIsExistException("Product","productName", finalProductDto.getProductName());
-//                }
-//        );
+        productRepository.findByProductName(productDto.getProductName()).ifPresent(
+                i -> {
+                    throw new ResourceIsExistException("Product", "productName", finalProductDto.getProductName());
+                }
+        );
         Product product = convertDtoToEntity(productDto);
         product = productRepository.save(product);
+        Product finalProduct = product;
+        List<ImageDto> images = productDto.getImageUrl().stream()
+                .map(imageUrl -> new ImageDto(imageUrl, finalProduct.getProductId())).collect(Collectors.toList());
+        List<Image> list = new ArrayList<>();
+        for (ImageDto imageDto : images) {
+            Image image = new Image();
+            BeanUtils.copyProperties(imageDto, image);
+            list.add(image);
+        }
+        imageRepository.saveAll(list);
         productDto = convertEntityToDto(product);
         return productDto;
+    }
+
+    @Override
+    public ProductDto getProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "productId", productId.toString())
+        );
+        ProductDto productDto = convertEntityToDto(product);
+        return productDto;
+    }
+
+    @Override
+    public List<ProductDto> getProductByCompanyName(String companyName) {
+        Company company = companyRepository.findByCompanyName(companyName).orElseThrow(
+                () -> new ResourceNotFoundException("Company", "companyName", companyName)
+        );
+        List<Product> products = productRepository.findByCompanyCompanyName(company).get();
+        List<ProductDto> productDtos = products.stream().map(i -> convertEntityToDto(i)).collect(Collectors.toList());
+        return productDtos;
+    }
+
+    @Override
+    public ProductDto getProductsByName(String productName) {
+        Product product = productRepository.findByProductName(productName).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "productName", productName)
+        );
+        ProductDto productDto = convertEntityToDto(product);
+        return productDto;
+    }
+
+    @Override
+    public List<ProductDto> searchProducts(String regex) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public ProductDto deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "productId", productId.toString())
+        );
+        ProductDto productDto = convertEntityToDto(product);
+        productRepository.deleteById(productId);
+        return productDto;
+    }
+
+    @Override
+    public List<ProductDto> getProductByCategoryId(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new ResourceNotFoundException("Category", "categoryId", categoryId.toString())
+        );
+        List<Product> products = productRepository.findByCategoryCategoryId(categoryId).get();
+        List<ProductDto> productDtos = products.stream().map(i -> convertEntityToDto(i)).collect(Collectors.toList());
+        return productDtos;
+    }
+
+    @Override
+    public List<ProductDto> getProductByPriceRange(Double startPrice, Double endPrice) {
+        List<Product> products = productRepository.findByPriceRange(startPrice, endPrice).get();
+        List<ProductDto> productDtos = products.stream().map(i -> convertEntityToDto(i)).collect(Collectors.toList());
+        return productDtos;
+    }
+
+    @Override
+    public List<ProductDto> getProductSortByPrice(Integer pageNumber) {
+        return null;
     }
 
     private ProductDto convertEntityToDto(Product product) {
@@ -67,71 +152,5 @@ public class ProductServiceImpl implements ProductService {
                 .company(companyRepository.getById(productDto.getCompanyId()))
                 .build();
         return product;
-    }
-
-    @Override
-    public ProductDto getProduct(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product","productId",productId.toString())
-        );
-        ProductDto productDto = convertEntityToDto(product);
-        return productDto;
-    }
-
-    @Override
-    public List<ProductDto> getProductByCompanyName(String companyName) {
-        Company company = companyRepository.findByCompanyName(companyName).orElseThrow(
-                ()-> new ResourceNotFoundException("Company","companyName",companyName)
-        );
-        List<Product> products = productRepository.findByCompanyCompanyName(company).get();
-        List<ProductDto> productDtos = products.stream().map(i->convertEntityToDto(i)).collect(Collectors.toList());
-       return productDtos;
-    }
-
-    @Override
-    public List<ProductDto> getProductsByName(String productName) {
-//        Product product = productRepository.findByProductName(productName).orElseThrow(
-//                ()-> new ResourceNotFoundException("Product","productName",productName)
-//        );
-
-        return null;
-    }
-
-    @Override
-    public List<ProductDto> searchProducts(String regex) {
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public ProductDto deleteProduct(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product","productId",productId.toString())
-        );
-        ProductDto productDto = convertEntityToDto(product);
-        productRepository.deleteById(productId);
-        return productDto;
-    }
-
-    @Override
-    public List<ProductDto> getProductByCategoryId(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                ()-> new ResourceNotFoundException("Category","categoryId",categoryId.toString())
-        );
-        List<Product> products = productRepository.findByCategoryCategoryId(categoryId).get();
-        List<ProductDto> productDtos = products.stream().map(i-> convertEntityToDto(i)).collect(Collectors.toList());
-        return productDtos;
-    }
-
-    @Override
-    public List<ProductDto> getProductByPriceRange(Double startPrice, Double endPrice) {
-        List<Product> products = productRepository.findByPriceRange(startPrice,endPrice).get();
-        List<ProductDto> productDtos = products.stream().map(i->convertEntityToDto(i)).collect(Collectors.toList());
-        return productDtos;
-    }
-
-    @Override
-    public List<ProductDto> getProductSortByPrice(Integer pageNumber) {
-        return null;
     }
 }
