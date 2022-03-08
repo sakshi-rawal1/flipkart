@@ -45,8 +45,8 @@ public class ProductController {
     }
 
     @GetMapping("/name/{productName}")
-    public ResponseEntity<List<ProductDto>> getProductsByName(@PathVariable String productName){
-        return new ResponseEntity<List<ProductDto>>(productService.getProductsByName(productName),HttpStatus.OK);
+    public ResponseEntity<ProductDto> getProductsByName(@PathVariable String productName){
+        return new ResponseEntity<ProductDto>(productService.getProductsByName(productName),HttpStatus.OK);
     }
 
     @GetMapping("/")
