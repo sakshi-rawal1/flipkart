@@ -39,7 +39,7 @@ public class ProductController {
         return new ResponseEntity<List<ProductDto>>(productService.getProductByCategoryId(categoryId),HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("/range")
     public ResponseEntity<List<ProductDto>> getProductByPriceRange(@PathParam("startPrice") Double startPrice, @PathParam("endPrice") Double endPrice){
         return new ResponseEntity<List<ProductDto>>(productService.getProductByPriceRange(startPrice,endPrice),HttpStatus.OK);
     }
@@ -49,8 +49,13 @@ public class ProductController {
         return new ResponseEntity<ProductDto>(productService.getProductsByName(productName),HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<ProductDto>> searchProducts(@PathParam("regex") String regex){
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDto>> search(@PathParam("regex") String regex){
         return new ResponseEntity<List<ProductDto>>(productService.searchProducts(regex),HttpStatus.OK);
+    }
+
+    @GetMapping("/page/{pageNumber}")
+    public ResponseEntity<List<ProductDto>> getProductSortByPrice(@PathVariable Integer pageNumber){
+        return new ResponseEntity<List<ProductDto>>(productService.getProductSortByPrice(pageNumber),HttpStatus.OK);
     }
 }

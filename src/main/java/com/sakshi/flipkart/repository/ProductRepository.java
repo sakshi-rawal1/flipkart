@@ -14,6 +14,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<List<Product>> findByCompanyCompanyName(Company company);
 
     Optional<List<Product>> findByCategoryCategoryId(Long categoryId);
+
     @Query(value ="SELECT * FROM Product WHERE price BETWEEN ?1 AND ?2",nativeQuery = true)
     Optional<List<Product>> findByPriceRange(Double startPrice, Double endPrice);
+
+    Optional<List<Product>> findByProductNameLike(String productName);
+
+
+
 }

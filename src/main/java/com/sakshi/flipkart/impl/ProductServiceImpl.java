@@ -16,6 +16,9 @@ import com.sakshi.flipkart.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,7 +99,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> searchProducts(String regex) {
-        return null;
+
+        List<Product> products = productRepository.findByProductNameLike(regex).get();
+        List<ProductDto> productDtos = products.stream().map(i->convertEntityToDto(i)).collect(Collectors.toList());
+        return productDtos;
     }
 
     @Override
@@ -129,7 +135,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProductSortByPrice(Integer pageNumber) {
-        return null;
+        Page<Product> products = productRepository.findAll(PageRequest.of(pageNumber,2,Sort.by(Sort.Direction.ASC, "price")));
+        List<Product> productList = products.toList();
+        List<ProductDto> productDtos=productList.stream().map(i->convertEntityToDto(i)).collect(Collectors.toList());
+        return productDtos;
     }
 
     private ProductDto convertEntityToDto(Product product) {
