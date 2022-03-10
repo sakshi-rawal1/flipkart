@@ -22,4 +22,5 @@ public class Cart {
     )
     @OneToOne(cascade = CascadeType.DETACH)
     private Customer customer;
+
 }
