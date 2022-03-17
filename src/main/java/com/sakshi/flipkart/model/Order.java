@@ -6,19 +6,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
-@Entity
-@Table(name="cartsummary_tb")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "oder_tb")
 @Builder
-public class CartSummary {
+public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long cartSummaryId;
-    private Long quantity;
-    private Double price;
+    private Long orderId;
+    private Instant timestamp;
+    private Double totalPrice;
+    @JoinColumn(
+            name = "customer_id",
+            referencedColumnName = "customerId"
+    )
+    @ManyToOne(cascade = CascadeType.DETACH)
+    private Customer customer;
     @JoinColumn(
             name = "cart_id",
             referencedColumnName = "cartId"
@@ -26,10 +34,10 @@ public class CartSummary {
     @ManyToOne(cascade = CascadeType.DETACH)
     private Cart cart;
     @JoinColumn(
-            name="product_id",
-            referencedColumnName = "productId"
+            name = "address_id",
+            referencedColumnName = "addressId"
     )
     @ManyToOne(cascade = CascadeType.DETACH)
-    private Product product;
+    private Address address;
 
 }

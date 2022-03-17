@@ -20,6 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<List<Product>> findByProductNameLike(String productName);
 
-
+    @Query(value = "SELECT * from product_tb where product_id IN (SELECT product_id from cartsummary_tb where cart_id = ?1)",nativeQuery = true)
+    Optional<List<Product>> getProductsByCartId(Long cartId);
 
 }

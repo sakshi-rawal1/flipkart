@@ -5,14 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartSummaryDto {
+public class OrderDto {
+    private Instant timestamp;
+    private Double totalPrice;
+    private Long customerId;
     private Long cartId;
-    private Long productId;
-    private Long quantity;
-    private Double price;
-
+    private Long addressId;
 }
